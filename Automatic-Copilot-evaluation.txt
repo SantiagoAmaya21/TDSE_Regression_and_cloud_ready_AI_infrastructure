@@ -1,0 +1,231 @@
+========================================================
+  TA GRADING REPORT – Automatic Copilot Evaluation
+  Course: TDSE – Transformación Digital y Soluciones Empresariales
+  Assignment: Stellar Luminosity – Regression from First Principles
+  Student: Santiago Amaya Zapata
+========================================================
+
+------------------------------------------------------------
+SUMMARY
+------------------------------------------------------------
+The submission is technically solid and covers all required elements of
+both parts of the assignment. Notebook 1 implements linear regression
+from first principles correctly, with all mandatory visualizations
+(cost surface, convergence plot, three learning-rate experiments) and
+a clear conceptual discussion. Notebook 2 extends the model to
+polynomial and interaction regression, also fulfilling all mandatory
+items (M1/M2/M3 comparison, interaction-coefficient sweep, inference
+demo). The README provides adequate SageMaker evidence with four
+screenshots. The main technical concern is the very small learning
+rate (1e-12) used throughout Notebook 2: given feature magnitudes for
+T (3800–9200) and M*T (~2,280–22,080), gradient updates are
+negligibly small and the model is unlikely to converge to near-optimal
+parameters within 2 000 iterations. This constitutes a real tuning
+deficiency that limits the reliability of results in Notebook 2.
+All other criteria are met with good quality.
+
+------------------------------------------------------------
+GRADING BREAKDOWN  (scale 0.0 – 5.0)
+------------------------------------------------------------
+
+1. Repository Structure & Compliance ............ 0.50 / 0.50
+   - README.md present and well-organised:         ✓
+   - Two notebooks covering Part I and Part II:    ✓
+   - Datasets hard-coded as NumPy arrays:          ✓
+   - Only Python, NumPy, Matplotlib used:          ✓
+     (%pip install numpy matplotlib is acceptable)
+   Deductions: none.
+
+2. Notebook 1 – Linear Regression .............. 1.80 / 2.00
+   - Dataset visualisation and interpretation:     ✓
+   - Hypothesis (L̂ = wM + b) and MSE definition:  ✓
+   - Cost surface J(w,b) grid + contour plot
+     + written explanation [MANDATORY]:            ✓
+   - Gradient derivation (shown in markdown
+     with formula image and correct code):         ✓
+   - Non-vectorised gradient descent loop:         ✓
+   - Vectorised gradient descent:                  ✓
+   - Convergence plot + discussion [MANDATORY]:    ✓
+   - Learning-rate experiments ≥3 [MANDATORY]:     ✓ (lr = 0.001, 0.01, 0.05)
+   - Final fit plot + residual discussion:         ✓
+   - Conceptual questions (meaning of w,
+     limits of linearity):                         ✓
+
+   Deductions (–0.20):
+   - The three learning-rate experiments (Section 9) report only the
+     final w, b, and loss values via print statements. A side-by-side
+     convergence-curve plot comparing all three rates would have made
+     the analysis significantly more insightful and is the standard
+     way to illustrate the learning-rate trade-off. The absence of
+     this comparative visualisation is a minor but concrete gap.
+
+3. Notebook 2 – Polynomial Regression .......... 1.65 / 2.00
+   - Visualisation with temperature colour encoding: ✓
+   - Feature matrix [M, T, M², M·T]:               ✓
+   - Vectorised loss and gradient computation:      ✓
+   - Training loop + convergence plot:              ✓
+   - M1, M2, M3 feature-selection comparison
+     [MANDATORY]:                                   ✓ (scatter plots included)
+   - Interaction-coefficient sweep w_MT
+     [MANDATORY]:                                   ✓ (cost vs w_MT plot)
+   - Inference demo with new star [MANDATORY]:      ✓
+
+   Deductions (–0.35):
+   - Learning rate 1e-12 is inappropriate for this feature scale.
+     Features T and M*T have magnitudes in the thousands to tens of
+     thousands; as a result, the squared norms of gradients dominate
+     and a rate of 1e-12 produces essentially zero parameter updates
+     in 2 000 epochs. The model does not converge, and the printed
+     weights, loss values, and visualisations in Sections 7–9 are
+     therefore unreliable. A feature-normalisation step or a learning-
+     rate chosen via grid search was required. (–0.25)
+   - The inference section (Section 9) prints the predicted luminosity
+     but provides no physical interpretation or sanity check (e.g.,
+     comparing with the known power-law L ~ M^3.5–4 or bracketing
+     against training-set neighbours). The mandatory inference demo is
+     present but the interpretation requirement is only partially met.
+     (–0.10)
+
+4. Cloud Execution Evidence (SageMaker) ........ 0.45 / 0.50
+   - Description of SageMaker setup and execution: ✓
+   - Screenshots of notebooks inside SageMaker:    ✓ (Imagen1–Imagen4)
+   - Successful cell execution shown:              ✓
+   - At least one plot visible:                    ✓
+   - Local vs. cloud comparison:                   Partial
+
+   Deductions (–0.05):
+   - The local vs. cloud comparison is a single sentence ("Notebook
+     behaviour in SageMaker was consistent with local execution,
+     confirming cloud portability"). A brief discussion of latency,
+     environment differences, or enterprise relevance would fulfil the
+     spirit of this requirement more completely.
+
+------------------------------------------------------------
+FINAL GRADE
+------------------------------------------------------------
+Repository structure:   0.50 / 0.50
+Notebook 1:             1.80 / 2.00
+Notebook 2:             1.65 / 2.00
+Cloud evidence:         0.45 / 0.50
+                        ──────────
+Final grade: 4.4 / 5.0   →   PASS
+
+------------------------------------------------------------
+STRENGTHS
+------------------------------------------------------------
+• Full constraint compliance: only NumPy and Matplotlib used, all
+  datasets defined inline, no ML frameworks.
+• All three mandatory items in Notebook 1 are implemented and
+  visualised (cost surface, convergence plot, ≥3 learning rates).
+• All three mandatory items in Notebook 2 are implemented and
+  visualised (M1/M2/M3 comparison, w_MT sweep, inference demo).
+• Both gradient-descent variants (loop-based and vectorised) are
+  implemented correctly and the mathematical relationship between
+  them is explained.
+• Notebook 2 correctly constructs the design matrix with polynomial
+  and interaction terms and implements fully vectorised gradients
+  (dw = (2/n) * X.T @ error).
+• README is well-structured, describes SageMaker usage clearly, and
+  includes four relevant screenshots demonstrating cloud execution.
+• Conceptual discussion of the meaning of w and the limits of
+  linearity in Notebook 1 is accurate and appropriately concise.
+
+------------------------------------------------------------
+ISSUES & MISSING ELEMENTS
+------------------------------------------------------------
+• (Notebook 2 – Critical) Learning rate 1e-12 is far too small for
+  unnormalised features with magnitudes in the thousands. The model
+  does not converge, making the weights, losses, and comparative
+  plots in Sections 7–9 unreliable. Feature standardisation (zero
+  mean, unit variance) or an adaptive learning rate was necessary.
+• (Notebook 1 – Minor) Learning-rate experiment results are shown
+  only as printed text. A single figure overlaying convergence curves
+  for all three rates would complete this experiment properly.
+• (Notebook 2 – Minor) The inference demo lacks physical
+  interpretation; the predicted luminosity value is printed without
+  any sanity check or contextual discussion.
+• (README – Minor) The local vs. cloud comparison is a one-sentence
+  statement with no substantive discussion of environment, cost,
+  scalability, or enterprise implications.
+
+------------------------------------------------------------
+TA FEEDBACK TO STUDENT
+------------------------------------------------------------
+Good work overall. The repository is clean, all required files are
+present, and the core methodology—deriving and implementing gradient
+descent from first principles—is executed correctly in both notebooks.
+The mandatory visualisations are all present and the conceptual
+explanations demonstrate understanding of the material.
+
+The most important issue to address is the learning rate in Notebook 2.
+When features have very different scales (M ≈ 1, T ≈ 6 000,
+M*T ≈ 10 000), gradient magnitudes differ by orders of magnitude and
+no single fixed learning rate can work well across all of them. The
+standard remedy is to standardise each feature to zero mean and unit
+variance before training, then choose a learning rate in the range
+0.001–0.01. Without this, your M1/M2/M3 comparison and interaction
+sweep are based on an unconverged model and do not accurately reflect
+the value of each feature group.
+
+For the learning-rate experiment in Notebook 1, consider plotting all
+three convergence curves on a single figure so that the speed and
+stability differences are immediately visible—a print table alone does
+not communicate the dynamic behaviour of the optimiser.
+
+Finally, enrich the inference demo in Notebook 2 with a brief physical
+check: a star with M = 1.3 M_sun should have L roughly between 2 and
+5 L☉ according to the main-sequence power law (L ∝ M^3.5); confirming
+or questioning whether your model respects this order of magnitude
+adds scientific credibility to the result.
+
+------------------------------------------------------------
+AI-GENERATION ASSESSMENT  (NON-GRADING – informational only)
+------------------------------------------------------------
+
+A. Qualitative Assessment
+   Indicators consistent with AI assistance:
+   - Every section follows a near-identical structure: one-paragraph
+     motivation → purpose statement → code cell. The regularity is
+     unusually uniform across both notebooks and both parts of the
+     assignment.
+   - Markdown explanations use formal, generic academic phrasing
+     (e.g., "This reflects how machine learning workloads are
+     typically implemented in cloud and enterprise environments")
+     that is disconnected from the specific numerical results shown.
+   - No personal voice, informal comments, intermediate debugging
+     cells, or self-corrections are present anywhere in the notebooks.
+   - The README mirrors the notebook structure almost exactly, which
+     is consistent with auto-generated documentation.
+
+   Indicators of human involvement:
+   - The learning rate choice of 1e-12 in Notebook 2 is a genuine
+     tuning mistake that a fully AI-generated submission would less
+     likely make (or would self-correct); this suggests at least some
+     manual experimentation.
+   - The specific dataset values (M, T, L arrays) and the SageMaker
+     screenshot captions reflect domain-specific choices unlikely to
+     be fully AI-generated.
+
+B. Quantitative Estimate
+   Code:                ~70 %
+   Explanations/Markdown: ~80 %
+   README:              ~75 %
+
+C. Commentary
+   The project exhibits a high degree of structural and stylistic
+   uniformity across both notebooks and the README, consistent with
+   content produced or heavily refined by a large language model.
+   The absence of personal reasoning, iterative debugging traces, or
+   idiosyncratic commentary reinforces this impression. However, the
+   convergence-rate mistake in Notebook 2 and the presence of
+   SageMaker-specific evidence suggest meaningful personal effort in
+   execution and cloud deployment. The estimate above reflects that
+   the scaffolding and explanatory text were likely AI-assisted, while
+   the experimental choices and cloud execution were performed by the
+   student.
+
+   This assessment is observational and does not imply misconduct.
+
+========================================================
+  End of Report
+========================================================
